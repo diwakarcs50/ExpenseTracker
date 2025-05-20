@@ -8,6 +8,7 @@ import tableData from "./expenseData.js";
 
 function App() {
   const [expenseData, setExpenseData] = useState(tableData);
+ 
   
 
   return (

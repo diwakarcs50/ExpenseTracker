@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-
-
 function ExpenseTable({expenseData,setExpenseData}) {
 
+  const [filteredData,setFilteredData] = useState(expenseData)
+
   function handleChange(e){
-      if(e.target.value!== ''){
-        const filteredData = expenseData.filter((ele)=>(ele[category] === e.target.value))
-        setExpenseData(filteredData)
-      }
-      
+      setFilteredData(expenseData.filter((el)=>{
+        return el.category.toLowerCase().includes(e.target.value.toLowerCase())
+      }))
   }
 
   const [sum,setSum] = useState(0)
@@ -60,7 +58,7 @@ function ExpenseTable({expenseData,setExpenseData}) {
       </thead>
 
       <tbody>
-        {expenseData.map(({id,title,category,amount}) => {
+        {filteredData.map(({id,title,category,amount}) => {
           return (
             <tr key={id}>
               <td>{title}</td>

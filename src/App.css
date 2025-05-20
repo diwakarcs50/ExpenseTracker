@@ -26,6 +26,7 @@ main {
 .expense-table {
     width: 100%;
     border-collapse: collapse;
+    align-self:start ;
 }
 
 .expense-table select {
@@ -37,6 +38,7 @@ main {
 
 .amount-column div {
     display: flex;
+    
 }
 
 .amount-column span {

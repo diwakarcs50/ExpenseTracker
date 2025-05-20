@@ -13,6 +13,7 @@ function ExpenseForm({ setExpenseData }) {
     title: "",
     category: "",
     amount: "",
+    email: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -26,12 +27,13 @@ function ExpenseForm({ setExpenseData }) {
   const validationConfig = {
     title: [
       { required: true, message: "Please Enter Title" },
-      { minlength: 5, message: "Title should be at least 5 charactersl̥ long" },
+      { minlength: 5, message: "Title should be at least 5 characters long" },
     ],
     category: [
       { required: true, message: "Please Enter category" },
     ],
-    amount: [{ required:true, message:"Please Enter amount"},],
+    amount: [{ required:true, message:"Please Enter amount"}],
+   
   };
 
   const validate = (formData) => {
@@ -39,9 +41,13 @@ function ExpenseForm({ setExpenseData }) {
   
     Object.entries(formData).forEach(([key,value])=>{
         validationConfig[key].forEach((rule)=>{
-            if(rule.required){
+            if(rule.required && !value.trim()){
               errorData[key]= rule.message
             }
+            if(rule.minlength && value.length<rule.minlength){
+              errorData[key]= rule.message
+            }
+        
         })
     })
 
@@ -62,7 +68,8 @@ function ExpenseForm({ setExpenseData }) {
       title: "",
       category: "",
       amount: "",
-    });
+     
+    }); 
   };
 
   const handleChange = (e) => {
@@ -110,6 +117,8 @@ function ExpenseForm({ setExpenseData }) {
           onChange={handleChange}
           error={errors.amount}
         />
+
+
         <button className="add-btn">Add</button>
       </form>
     </>
