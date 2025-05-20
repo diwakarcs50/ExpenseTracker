@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { useFilter } from "../hooks/useFilter";
 
 function ExpenseTable({expenseData,setExpenseData}) {
 
-  const [filteredData,setFilteredData] = useState(expenseData)
+  // const [filteredData,setFilteredData] = useState(expenseData)
 
-  function handleChange(e){
-      setFilteredData(expenseData.filter((el)=>{
-        return el.category.toLowerCase().includes(e.target.value.toLowerCase())
-      }))
-  }
+  const [filteredData,setQuery] = useFilter(expenseData,(d)=>d.category)
+
+
+  // function handleChange(e){
+  //     setFilteredData(expenseData.filter((el)=>{
+  //       return el.category.toLowerCase().includes(e.target.value.toLowerCase())
+  //     }))
+  // }
+
+
 
   const [sum,setSum] = useState(0)
   
@@ -22,7 +28,7 @@ function ExpenseTable({expenseData,setExpenseData}) {
         <tr>
           <th>Title</th>
           <th>
-            <select onChange={handleChange}>
+            <select onChange={(e)=>setQuery(e.target.value)}>
               <option value="">All</option>
               <option value="grocery">Grocery</option>
               <option value="clothes">Clothes</option>
