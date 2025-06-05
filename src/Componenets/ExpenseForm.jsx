@@ -4,17 +4,15 @@ import { Input } from "./Input";
 import expenseData from "../expenseData";
 import Select from "./Select";
 
-function ExpenseForm({ setExpenseData }) {
+function ExpenseForm({
+  editingRowId,
+  setEditingRowId,
+  setExpenseData,
+  formData,
+  setFormData,
+}) {
   // console.log('rendering')
   // const [total,setTotal]  = useState('')
-
-  const [formData, setFormData] = useState({
-    // id: crypto.randomUUID(),
-    title: "",
-    category: "",
-    amount: "",
-    email: ""
-  });
 
   const [errors, setErrors] = useState({});
 
@@ -29,47 +27,71 @@ function ExpenseForm({ setExpenseData }) {
       { required: true, message: "Please Enter Title" },
       { minlength: 5, message: "Title should be at least 5 characters long" },
     ],
-    category: [
-      { required: true, message: "Please Enter category" },
-    ],
-    amount: [{ required:true, message:"Please Enter amount"}],
-   
+    category: [{ required: true, message: "Please Enter category" }],
+    amount: [{ required: true, message: "Please Enter amount" }],
   };
 
   const validate = (formData) => {
     const errorData = {};
-  
-    Object.entries(formData).forEach(([key,value])=>{
-        validationConfig[key].forEach((rule)=>{
-            if(rule.required && !value.trim()){
-              errorData[key]= rule.message
-            }
-            if(rule.minlength && value.length<rule.minlength){
-              errorData[key]= rule.message
-            }
-        
-        })
-    })
 
-    setErrors(errorData)
-    return errorData
+    Object.entries(formData).forEach(([key, value]) => {
+      validationConfig[key].forEach((rule) => {
+        if (rule.required && !value.trim()) {
+          errorData[key] = rule.message;
+        }
+        if (rule.minlength && value.length < rule.minlength) {
+          errorData[key] = rule.message;
+        }
+      });
+    });
+
+    setErrors(errorData);
+    return errorData;
   };
 
   const handleSubmit = (e) => {
+
+
     e.preventDefault();
+    const validateResult = validate(formData);
+    if (Object.keys(validateResult).length) return
+
+
+      if (editingRowId) {
+      setExpenseData((prev) => {
+        return prev.map((data) => {
+          if (data.id === editingRowId) {
+            return { ...formData, id: editingRowId };
+          }
+          return data;
+        });
+      });
+
+      setFormData({
+        title:"",
+        category: "",
+        amount: "",
+      })
+
+      setEditingRowId('')
+      return
+
+    }
+
     const { title, category, amount } = formData;
     const expense = { title, category, amount, id: crypto.randomUUID() };
 
-    const validateResult = validate(formData);
+    
     if (Object.keys(validateResult).length) return;
     console.log(errors);
+
+  
     setExpenseData((prev) => [...prev, expense]);
     setFormData({
       title: "",
       category: "",
       amount: "",
-     
-    }); 
+    });
   };
 
   const handleChange = (e) => {
@@ -118,8 +140,7 @@ function ExpenseForm({ setExpenseData }) {
           error={errors.amount}
         />
 
-
-        <button className="add-btn">Add</button>
+        <button className="add-btn">{editingRowId? "Update" : "Add"}</button>
       </form>
     </>
   );
